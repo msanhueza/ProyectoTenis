@@ -8,6 +8,10 @@ package proyectotenis.parseadorAtp;
  *
  * @author msanhuezal
  */
+
+/**
+ * La clase permite modelar un jugador con algunos de sus atributos
+ */
 public class Jugador {
 
     private String nombre;
@@ -15,6 +19,13 @@ public class Jugador {
     private int puntos;
     private String enlace;    
     
+    /**
+     * 
+     * @param nombre se refiere al nombre del jugador (nombre + apellido)
+     * @param pais se refiere al país de nacimiento del jugador
+     * @param puntos se refiere a los puntos del ranking atp del jugador
+     * @param enlace  se refiere al enlace web que contiene todos los partidos que el jugador ha enfrentado en una temporada
+     */
     public Jugador(String nombre, String pais, int puntos, String enlace) {
         this.nombre = nombre;
         this.pais = pais;
