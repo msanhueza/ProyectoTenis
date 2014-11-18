@@ -8,6 +8,11 @@ package proyectotenis.parseadorAtp;
  *
  * @author msanhuezal
  */
+
+/**
+ * 
+ * La clase permite modelar un partido de tenis al que se ha enfrentado un determinado jugador
+ */
 public class Partido {
 
     private String campeonato;
@@ -17,6 +22,15 @@ public class Partido {
     private String oponente;
     private boolean ganador;    
     
+    /**
+     * 
+     * @param campeonato se refiere al campeonato que disputo el jugador (nombre)
+     * @param ano se refiere al año en que juego el partido el jugador
+     * @param superficie se refiere a la superficie de la cancha en la que jugo el jugador
+     * @param ronda se refiere a la ronda (semis, final, etc) correspondiente al partido que jugo
+     * @param oponente se refiere al nombre del jugador oponente (nombre + apellido)
+     * @param ganador se refiere al resultado final del jugador con su oponente (true/false)
+     */
     public Partido(String campeonato, String ano, String superficie, String ronda, String oponente, boolean ganador) {
         this.campeonato = campeonato;
         this.ano = ano;
