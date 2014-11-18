@@ -27,7 +27,7 @@ static ArrayList<Jugador> jugadores = new ArrayList<>();
     
 public static void main(String[] args) throws IOException {
         //obtenerPartidos("Tennis/Players/Top-Players/Rafael-Nadal.aspx?t=pa&");
-        obtenerDatos200();
+        obtenerDatos200(2012);
         //estadisticaDesempenoJugadores(2014, 0);
         //estadisticaH2H("D643", "N409"); //djokovic vs nadal
         //estadisticaH2H("F324", "T786"); //federer vs tsonga
@@ -59,12 +59,10 @@ private static String obtenerContenidoHtml() throws IOException {
  * @throws MalformedURLException
  * @throws IOException 
  */
-private static void obtenerPartidos(String enlace) throws MalformedURLException, IOException{
-    //ArrayList<Partido> p = new ArrayList<>();
-    ArrayList<String> anos = new ArrayList<>();
-    anos.add("2013");
-    for(int x=0; x<anos.size(); x++){
-        URL url = new URL("http://www.atpworldtour.com/" + enlace + "y="+anos.get(x)+"&m=s&e=0#");
+private static void obtenerPartidos(String enlace, int ano) throws MalformedURLException, IOException{
+        
+        String anoEvaluado = ano+"";
+        URL url = new URL("http://www.atpworldtour.com/" + enlace + "y="+anoEvaluado+"&m=s&e=0#");
         URLConnection uc = url.openConnection();
         uc.connect();    
         BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
@@ -77,7 +75,7 @@ private static void obtenerPartidos(String enlace) throws MalformedURLException,
             if(inputLine.contains("<p class=\"bioPlayActivityInfo\"><a href=\"/Tennis/Tournaments") || inputLine.contains("<p class=\"bioPlayActivityInfo\"><strong>")){ //campeonato, año, superficie
                 contenido = "";
                 contenido += inputLine.substring(inputLine.indexOf("<strong>")+8, inputLine.indexOf("</strong>")) + ";";
-                contenido += anos.get(x) + ";";
+                contenido += anoEvaluado + ";";
                 String[] aux = inputLine.split(";");
                 contenido += aux[aux.length-4] + ";";            
             }
@@ -106,20 +104,27 @@ private static void obtenerPartidos(String enlace) throws MalformedURLException,
         }
         in.close();    
         //return p;
-    }
+    
 }
 
 /**
  * El metodo permite obtener información de los primeros 200 jugadores del circuito atp para una determinada temporada
  * @throws IOException 
  */
-private static void obtenerDatos200() throws IOException {
+private static void obtenerDatos200(int ano) throws IOException {
     ArrayList<String> rank = new ArrayList<>();
     rank.add("1"); //primeros 100
-    //rank.add("101"); //101-200
+    rank.add("101"); //101-200
+    String fecha2012 = "31.12.2012";
+    String fecha2013 = "30.12.2013";
     for(int i=0; i<rank.size(); i++){
-        URL url = new URL("http://www.atpworldtour.com/Rankings/Singles.aspx?d=30.12.2013&r="+rank.get(i)+"&c=#");
-        String link = "http://www.atpworldtour.com";
+        URL url;
+        if(ano == 2012){
+            url = new URL("http://www.atpworldtour.com/Rankings/Singles.aspx?d="+fecha2012+"&r="+rank.get(i)+"&c=#");
+        }
+        else{
+            url = new URL("http://www.atpworldtour.com/Rankings/Singles.aspx?d="+fecha2013+"&r="+rank.get(i)+"&c=#");
+        }
         URLConnection uc = url.openConnection();
         uc.connect();
         BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
@@ -141,6 +146,7 @@ private static void obtenerDatos200() throws IOException {
                 num++;
             }
             if(num == 3){ //agregar jugador
+                System.out.println(contenido);
                 String[] jug = contenido.split(";");
                 String nombre = jug[0];
                 String pais = jug[1];
@@ -148,8 +154,7 @@ private static void obtenerDatos200() throws IOException {
                 String enlace = jug[3];
                 Jugador j = new Jugador(nombre, pais, puntos, enlace); //creo el jugador
                 jugadores.add(j); // agrego al jugador
-                //obtenerPartidos(enlace);
-                
+                obtenerPartidos(enlace, ano);
                 contenido = "";
                 num = 0;
             }
