@@ -16,9 +16,14 @@ import java.util.ArrayList;
  *
  * @author msanhuezal
  */
+
+/**
+ * 
+ * La clase permite ejecutar algunos metodos encargados de extraer datos desde un sitio web
+ */
 public class ParseadorAtp {
 
-    static ArrayList<Jugador> jugadores = new ArrayList<>();
+static ArrayList<Jugador> jugadores = new ArrayList<>();
     
 public static void main(String[] args) throws IOException {
         //obtenerPartidos("Tennis/Players/Top-Players/Rafael-Nadal.aspx?t=pa&");
@@ -27,7 +32,12 @@ public static void main(String[] args) throws IOException {
         //estadisticaH2H("D643", "N409"); //djokovic vs nadal
         //estadisticaH2H("F324", "T786"); //federer vs tsonga
     }
-    
+
+/**
+ * El metodo es un ejemplo de como extraer el código fuente de una pagina web
+ * @return el código fuente de la página evaluada
+ * @throws IOException 
+ */
 private static String obtenerContenidoHtml() throws IOException {
     URL url = new URL("http://www.atpworldtour.com/Share/Event-Draws.aspx?e=580&y=2014");
     URLConnection uc = url.openConnection();
@@ -43,6 +53,12 @@ private static String obtenerContenidoHtml() throws IOException {
     return contenido;
 }    
 
+/**
+ * El metodo se encarga de obtener todos los partidos a los que se ha enfrentado un determinado jugador
+ * @param enlace se refiere a la URL que permite visualizar todos los partidos a los que se ha enfrentado un jugador
+ * @throws MalformedURLException
+ * @throws IOException 
+ */
 private static void obtenerPartidos(String enlace) throws MalformedURLException, IOException{
     //ArrayList<Partido> p = new ArrayList<>();
     ArrayList<String> anos = new ArrayList<>();
@@ -75,7 +91,7 @@ private static void obtenerPartidos(String enlace) throws MalformedURLException,
                             contenido2 += "Bye" + ";";
                         }
                         else{
-                            contenido2 += limpiarNombreApellido2(inputLine.substring(inputLine.indexOf("aspx")+6, inputLine.indexOf("</a>"))) + ";";
+                            contenido2 += TranformarNombreApellido2(inputLine.substring(inputLine.indexOf("aspx")+6, inputLine.indexOf("</a>"))) + ";";
                         }
                     }
                     else if(j == 3){//ganador o no
@@ -93,6 +109,10 @@ private static void obtenerPartidos(String enlace) throws MalformedURLException,
     }
 }
 
+/**
+ * El metodo permite obtener información de los primeros 200 jugadores del circuito atp para una determinada temporada
+ * @throws IOException 
+ */
 private static void obtenerDatos200() throws IOException {
     ArrayList<String> rank = new ArrayList<>();
     rank.add("1"); //primeros 100
@@ -109,7 +129,7 @@ private static void obtenerDatos200() throws IOException {
         while ((inputLine = in.readLine()) != null) {
             if(inputLine.contains("<a href=\"/Tennis/Players") && num != 3) {
                 if(num == 0){
-                    contenido += limpiarNombreApellido(inputLine.substring(inputLine.indexOf("aspx")+6, inputLine.indexOf("</a>"))) + ";"; //nombre
+                    contenido += TransformarNombreApellido(inputLine.substring(inputLine.indexOf("aspx")+6, inputLine.indexOf("</a>"))) + ";"; //nombre
                     contenido += inputLine.substring(inputLine.length()-4, inputLine.length()-1) + ";"; //pais
                 }
                 else if(num == 1){
@@ -140,47 +160,67 @@ private static void obtenerDatos200() throws IOException {
 
 } 
 
-private static String limpiarValorPorcentual(String valor){
+/**
+ * El metodo permite transformar un valor porcentual del tipo 98% a 0.98
+ * @param valor se refiere al valor porcentual sin transformar
+ * @return 
+ */
+private static String TransformarValorPorcentual(String valor){
     String aux = valor.substring(0, valor.length()-1);
     double nuevoValor = Double.parseDouble(aux) / 100;
     return nuevoValor + "";
 }
 
-private static String limpiarNombreApellido(String valor){
+/**
+ * El metodo permite transformar el nombre de un jugador a un formato determinado
+ * @param valor se refiere al nombre del jugador sin transformar
+ * @return el nombre del jugador en el formato adecuado
+ */
+private static String TransformarNombreApellido(String valor){
     String nombre = valor.substring(valor.indexOf(";")+1, valor.length());
     String apellido = valor.substring(0, valor.indexOf(","));
     return nombre + " " + apellido;
 }
 
-private static String limpiarNombreApellido2(String valor){
+/**
+ * El metodo permite transformar el nombre de un jugador a un formato determinado
+ * @param valor se refiere al nombre del jugador sin transformar
+ * @return el nombre del jugador en el formato adecuado
+ */
+private static String TranformarNombreApellido2(String valor){
     String apellido = valor.substring(valor.indexOf(";")+1, valor.length());
     String nombre = valor.substring(0, valor.indexOf("&nbsp"));
     return nombre + " " + apellido;
 }
 
+/**
+ * El metodo permite limpiar algunos atributos correspondientes a un jugador
+ * @param jugador corresponde a todos los atributos de un jugador separados por ";"
+ * @return todos los atributos de un jugador, separados por ";" y en el formato adecuado
+ */
 private static String limpiarValores(String jugador){
     String[] datosJugador = jugador.split(";");
     jugador = "";
     for(int i=0; i<datosJugador.length; i++){
-        if(i == 0 || i == 1 || i == 2 || i == 5 || i == 7){
+        if(i == 0 || i == 1 || i == 2 || i == 5 || i == 7){ // si no hay que hacer cambios
             jugador += datosJugador[i] + ";";
         }    
-        else if(i == 3 || i == 4){
+        else if(i == 3 || i == 4){ // si el valor esta compuesto de 2 atributos separados por un "-"
             String[] aux = datosJugador[i].split("-");
             jugador += aux[0] + ";";
             jugador += aux[1] + ";";
         }
-        else if(i == 6 || i == 8){
+        else if(i == 6 || i == 8){ // si el valor cuenta con una "," se reemplaza por un "."
             jugador += datosJugador[i].replace(",", ".") + ";";
         }
         else if(i>=9){
-            if(i != 15){
-                jugador += limpiarValorPorcentual(datosJugador[i]) + ";";
+            if(i != 15){ // si el valor corresponde a un valor porcentual
+                jugador += TransformarValorPorcentual(datosJugador[i]) + ";";
             }
-            else{
+            else{ // si el valor corresponde a dos valores porcentuales separados por un "-"
                 String[] aux = datosJugador[i].split("-");
-                jugador += limpiarValorPorcentual(aux[0]) + ";";
-                jugador += limpiarValorPorcentual(aux[1]) + ";";               
+                jugador += TransformarValorPorcentual(aux[0]) + ";";
+                jugador += TransformarValorPorcentual(aux[1]) + ";";               
             }
         }
     }
@@ -188,6 +228,13 @@ private static String limpiarValores(String jugador){
     return jugador;
 }
 
+/**
+ * El metodo permite obtener información sobre los encuentros entre dos jugadores de tenis
+ * @param idJug1 se refiere al ID del jugador en el sitio web
+ * @param idJug2 se refiere al ID del jugador en el sitio web
+ * @throws MalformedURLException
+ * @throws IOException 
+ */
 private static void estadisticaH2H(String idJug1, String idJug2) throws MalformedURLException, IOException{
     URL url = new URL("http://www.atpworldtour.com/Players/Head-To-Head.aspx?pId=" + idJug1 + "&oId=" + idJug2);
     URLConnection uc = url.openConnection();
@@ -211,7 +258,7 @@ private static void estadisticaH2H(String idJug1, String idJug2) throws Malforme
                    if(inputLine.contains("<td>")){
                        if(inputLine.contains("<td><a href=")){
                             inputLine = inputLine.substring(inputLine.indexOf("<strong>")+8, inputLine.indexOf("</strong>"));
-                            inputLine = (i==3)? (limpiarNombreApellido(inputLine)) : (inputLine + ";");
+                            inputLine = (i==3)? (TransformarNombreApellido(inputLine)) : (inputLine + ";");
                             contenido += inputLine;
                                                       
                        }
@@ -246,6 +293,13 @@ private static void estadisticaH2H(String idJug1, String idJug2) throws Malforme
     in.close();   
 }
 
+/**
+ * El metodo permite obtener información sobre el desempeño de un jugador para un año y superficie determinada
+ * @param ano se refiere al año de la temporada a evaluar
+ * @param superficie se refiere al tipo de cancha en la que jugo el jugador: Todas (0), Arcilla (1), Pasto (2) y Asfalto (3)
+ * @throws MalformedURLException
+ * @throws IOException 
+ */
 private static void estadisticaDesempenoJugadores(int ano, int superficie) throws MalformedURLException, IOException{
     URL url = new URL("http://es.atpworldtour.com/Rankings/Top-Matchfacts.aspx?y=" + ano + "&s=" + superficie + "#");
     URLConnection uc = url.openConnection();
