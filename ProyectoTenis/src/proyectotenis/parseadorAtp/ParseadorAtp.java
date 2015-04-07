@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -27,7 +28,8 @@ static ArrayList<Jugador> jugadores = new ArrayList<>();
     
 public static void main(String[] args) throws IOException {
         //obtenerPartidos("Tennis/Players/Top-Players/Rafael-Nadal.aspx?t=pa&");
-        obtenerDatos200(2012);
+        //obtenerDatos200(2012);
+        obtenerJugadores(2012);
         //estadisticaDesempenoJugadores(2014, 0);
         //estadisticaH2H("D643", "N409"); //djokovic vs nadal
         //estadisticaH2H("F324", "T786"); //federer vs tsonga
@@ -106,6 +108,70 @@ private static void obtenerPartidos(String enlace, int ano) throws MalformedURLE
         //return p;
     
 }
+
+
+/**
+ * El metodo permite obtener información de los primeros 1000 jugadores del circuito atp para una determinada temporada
+ * @throws IOException 
+ */
+private static HashMap<String, Integer> obtenerJugadores(int ano) throws IOException {
+    ArrayList<String> rank = new ArrayList<>();
+    rank.add("1"); //primeros 100
+    rank.add("101"); //101-200
+    rank.add("201"); //201-300
+    rank.add("301"); //301-400
+    rank.add("401"); //401-500
+    rank.add("501"); //501-600
+    rank.add("601"); //601-700
+    rank.add("701"); //701-800
+    rank.add("801"); //801-900    
+    rank.add("901"); //901-1000
+    String fecha2012 = "31.12.2012";
+    int contador = 0;
+    HashMap<String, Integer> jugadores = new HashMap<>();
+    for(int i=0; i<rank.size(); i++){
+        URL url;
+        url = new URL("http://www.atpworldtour.com/Rankings/Singles.aspx?d="+fecha2012+"&r="+rank.get(i)+"&c=#");
+        URLConnection uc = url.openConnection();
+        uc.connect();
+        BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
+        String inputLine;
+        int num = 0;
+        String contenido = "";
+        while ((inputLine = in.readLine()) != null) {
+            if(inputLine.contains("<a href=\"/Tennis/Players") && num != 3) {
+                if(num == 0){
+                    contenido += TransformarNombreApellido(inputLine.substring(inputLine.indexOf("aspx")+6, inputLine.indexOf("</a>"))) + ";"; //nombre
+                    contenido += inputLine.substring(inputLine.length()-4, inputLine.length()-1) + ";"; //pais
+                }
+                else if(num == 1){
+                    contenido += inputLine.substring(inputLine.indexOf("rb\">")+4, inputLine.indexOf("</a>")).replace(",", "") + ";"; //puntos
+                }
+                else{
+                    contenido += inputLine.substring(inputLine.indexOf("href")+6, inputLine.indexOf("pa&")+3); //link partidos
+                }                
+                num++;
+            }
+            if(num == 3){ //agregar jugador
+                String[] jug = contenido.split(";");
+                String nombre = jug[0];
+                //String pais = jug[1];
+                //int puntos = Integer.parseInt(jug[2]);
+                //String enlace = jug[3];
+                //Jugador j = new Jugador(nombre, pais, puntos, enlace); //creo el jugador
+                System.out.println(nombre);
+                jugadores.put(nombre , contador );
+                contador++;
+                contenido = "";
+                num = 0;
+            }
+
+        }
+        in.close();
+    }    
+
+    return jugadores;
+} 
 
 /**
  * El metodo permite obtener información de los primeros 200 jugadores del circuito atp para una determinada temporada
