@@ -14,12 +14,22 @@ public class Encuentro {
     String anio;
     String superficie; // Hard, Clay, Grass
     String ronda; // W, S, Q, R16, R32, R64, R128  
+    String oponente;
+    String resultado;
 
     public Encuentro(String anio, String superficie, String ronda) {
         this.anio = anio;
         this.superficie = superficie;
         this.ronda = ronda;
     }
+    
+    public Encuentro(String anio, String superficie, String ronda, String oponente, String resultado) {
+        this.anio = anio;
+        this.superficie = superficie;
+        this.ronda = ronda;
+        this.oponente = oponente;
+        this.resultado = resultado;
+    }    
 
     public String getAnio() {
         return anio;
@@ -43,6 +53,22 @@ public class Encuentro {
 
     public void setRonda(String ronda) {
         this.ronda = ronda;
+    }    
+    
+    public String getOponente() {
+        return oponente;
+    }
+
+    public void setOponente(String oponente) {
+        this.oponente = oponente;
+    }
+
+    public String getResultado() {
+        return resultado;
+    }
+
+    public void setResultado(String resultado) {
+        this.resultado = resultado;
     }    
     
 }
