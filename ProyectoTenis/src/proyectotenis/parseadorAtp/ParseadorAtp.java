@@ -29,8 +29,8 @@ static ArrayList<Jugador> jugadores = new ArrayList<>();
 public static void main(String[] args) throws IOException {
         //obtenerPartidos("Tennis/Players/Top-Players/Rafael-Nadal.aspx?t=pa&");
         //obtenerDatos200(2012);
-        obtenerJugadores(2012);
-        //estadisticaDesempenoJugadores(2014, 0);
+        //obtenerJugadores(2012);
+        estadisticaDesempenoJugadores(2013, 3);
         //estadisticaH2H("D643", "N409"); //djokovic vs nadal
         //estadisticaH2H("F324", "T786"); //federer vs tsonga
     }

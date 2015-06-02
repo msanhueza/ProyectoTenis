@@ -22,21 +22,62 @@ public class ClasificadorKnn {
     public static ArrayList<Game> listaJuegos; // lista de todos los juegos
     public static ArrayList<ObjetivoDistancia> distancias; // lista ObjectoDistancia que guarda la distancia y el resultado del partido
     
+    public static ArrayList<Game> listaPrueba; // lista partidos de prueba
+    public static ArrayList<Game> listaEntrenamiento; // lista partidos de entrenamiento
+    
     public ClasificadorKnn(String auxCsvPartidos, int k) throws IOException{
         String csvPardidos = auxCsvPartidos;
         listaJuegos = new ArrayList<>();
         distancias = new ArrayList<>();
         
+        listaEntrenamiento = new ArrayList<>();
+        listaPrueba = new ArrayList<>();
+        
         cargarPartidos(csvPardidos);
-        listaJuegos = disarray(listaJuegos);
-        
-        ArrayList<Double> aux1 = new ArrayList<>();
-        for(int i=0; i<18; i++){
-            aux1.add(1.0);
+        System.out.println(validacionCruzada(5, k));        
+    }
+    
+    /**
+     * Metodo que evalua los resultados del analisis estadistico
+     * @param iteraciones cantidad de repeticiones para el calculo del valor que se quiere obtener
+     * @param k vecinos mas cercanos a evaluar
+     * @return el promedio de los elementos bien clasificados
+     */
+    public double validacionCruzada(int iteraciones, int k){
+        double promedio = 0;
+        for(int z=0; z<iteraciones; z++){
+            Collections.shuffle(listaJuegos);
+            int middle;
+            int total = 1000;
+            middle = (listaJuegos.size() % 2 == 0)? total / 2 : (total - 1) / 2;
+            //agregar los valores al array train
+            for(int i = 0; i<middle; i++){
+                listaEntrenamiento.add(listaJuegos.get(i));
+            }
+            //agregar los valores al array test
+            for(int i = middle; i<total; i++){
+                listaPrueba.add(listaJuegos.get(i));
+            }            
+            int count = 0;
+            for(int i = 0; i<listaPrueba.size(); i++){
+                for(int j = 0; j<listaEntrenamiento.size(); j++){
+                    double distance = calcularDistancia(listaPrueba.get(i), listaEntrenamiento.get(j) );
+                    distancias.add(new ObjetivoDistancia(distance,  listaEntrenamiento.get(i).getResultado()));
+                }
+                String prediccion = calcularResultado(distancias, k);
+                if(prediccion.equals(listaPrueba.get(i).getResultado())){
+                    count++;
+                }
+
+            }
+            double result = (double) count/listaPrueba.size() * 100;
+            promedio += result;
+            distancias.clear();        
+            listaEntrenamiento.clear();
+            listaPrueba.clear();
         }
-        Game aux = new Game(aux1, "W");        
-        clasificarPartido(aux, k);
-        
+        return promedio/iteraciones;
+          
     }
 
 /**
@@ -88,29 +129,6 @@ public class ClasificadorKnn {
        
    }
    
-   /**
-    * El metodo se encarga de desordenar todos los partidos que se encuentran en la listaJuegos
-    * @param listaJuegos lista con todos los partidos a evaluar
-    * @return lista con todos los partidos a evaluar de manera desordenada
-    */
-    private static ArrayList<Game> disarray(ArrayList<Game> listaJuegos) {
-        int total = listaJuegos.size();
-        Random r = new Random();
-        Game auxGame;
-        int index1 = r.nextInt(total);
-        int index2 = r.nextInt(total);    
-        for(int i=0; i<total; i++){
-            do{
-                index1 = r.nextInt(total);
-                index2 = r.nextInt(total); 
-            }while(index1 == index2);
-            auxGame = listaJuegos.get(index1);
-            listaJuegos.set(index1, listaJuegos.get(index2));
-            listaJuegos.set(index2, auxGame);               
-        }
-        return listaJuegos;
-    }
-
     /**
      * El metodo se encarga de clasificar un determinado partido
      * @param aux partido que se quiere clasificar
@@ -125,34 +143,8 @@ public class ClasificadorKnn {
         }
         Collections.sort(distancias);
         
-        int cantidadVictorias, cantidadDerrotas;
-        cantidadVictorias = 0;
-        cantidadDerrotas = 0;
-        for(int i=0; i<k; i++){
-            if(distancias.get(i).getResultado().equals("W")){
-                cantidadVictorias++;
-            }
-            else{
-                cantidadDerrotas++;
-            }
-        }        
-        if(cantidadVictorias > cantidadDerrotas){
-            System.out.println("V");
-            return "V";
-        }
-        else if(cantidadVictorias < cantidadDerrotas){
-            System.out.println("D");
-            return "D";
-        }
-        else{
-            Random r = new Random();
-            boolean gano = r.nextBoolean();
-            String resultado = (gano == true)? "V" : "D";
-            System.out.println(resultado);
-            return resultado;
-        }
-        
-        
+        return calcularResultado(distancias, k);
+
     }
 
     /**
@@ -169,6 +161,42 @@ public class ClasificadorKnn {
             resultado += Math.pow(diferencia, 2);
         }
         return Math.sqrt(resultado);
+    }
+
+    /**
+     * El metodo permite obtener el resultado del partido W victoria, L derrota
+     * @param listaJuegos
+     * @param k
+     * @return 
+     */
+    private String calcularResultado(ArrayList<ObjetivoDistancia> d, int k) {
+        //ordenar de Menor a Mayor
+        Collections.sort(distancias);
+        int cantidadVictorias, cantidadDerrotas;
+        cantidadVictorias = 0;
+        cantidadDerrotas = 0;
+        String prediccion = "";
+        for(int x=0; x<k; x++){
+            if(distancias.get(x).getResultado().equals("W")){
+                cantidadVictorias++;
+            }
+            else{
+                cantidadDerrotas++;
+            }
+        }        
+        if(cantidadVictorias > cantidadDerrotas){
+            prediccion = "W";
+        }
+        else if(cantidadVictorias < cantidadDerrotas){
+            prediccion = "L";
+        }
+        else{
+            Random r = new Random();
+            boolean gano = r.nextBoolean();
+            String resultado = (gano == true)? "W" : "L";
+            prediccion = resultado;
+        } 
+        return prediccion;
     }
     
 }

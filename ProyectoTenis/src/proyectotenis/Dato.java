@@ -22,12 +22,13 @@ public class Dato {
     
     public static void main(String[] args) {
         int N = 200;
+        String superficie = "All";
         desempeno = new HashMap<>();
         jugadores = new ArrayList<>();
         encuentros = new HashMap<>();
-        desempeno = leerDesempenoJugadores(); // se carga el desempeño y la lista de jugadores TOP 200 del 2012
-        encuentros = leerEncuentrosJugadores();
-        crearFormatoSalida();
+        desempeno = leerDesempenoJugadores("src/datos/desempeno2013.csv"); // se carga el desempeño y la lista de jugadores TOP 200 del 2012
+        encuentros = leerEncuentrosJugadores(superficie);
+        crearFormatoSalida(superficie);
         //debiera actualizar la lista de jugadores que tienen partidos jugados
         for(int i=0; i<jugadores.size(); i++){
             if(encuentros.get(jugadores.get(i)) == null){
@@ -114,9 +115,9 @@ public class Dato {
 //        return 3;
     }
     
-    public static ArrayList<String> obtenerJugadores2012CSV(int cantidad){
+    public static ArrayList<String> obtenerJugadores2012CSV(int cantidad, String ruta){
         //archivo que se necesita parsear
-        String fileToParse = "src/datos/desempeño2012.csv";
+        String fileToParse = ruta;
         BufferedReader fileReader = null;
         int contador = 0;
         ArrayList<String> jugadores = new ArrayList<>();
@@ -157,9 +158,9 @@ public class Dato {
         return jugadores;
     }    
 
-    private static HashMap<String, Jugador> leerDesempenoJugadores() {
+    private static HashMap<String, Jugador> leerDesempenoJugadores(String ruta) {
         HashMap<String, Jugador> desempeno = new HashMap<String, Jugador>();
-        String fileToParse = "src/datos/desempeño2012.csv";
+        String fileToParse = ruta;
         BufferedReader fileReader = null;
         int contador = 0;
          
@@ -217,7 +218,7 @@ public class Dato {
         return desempeno;
     }
 
-    private static HashMap<String, ArrayList<Encuentro>> leerEncuentrosJugadores() {
+    private static HashMap<String, ArrayList<Encuentro>> leerEncuentrosJugadores(String auxSupercifie) {
 
         HashMap<String, ArrayList<Encuentro>> encuentros = new HashMap<String, ArrayList<Encuentro>>();
         String fileToParse = "src/datos/encuentros2012.csv";
@@ -254,8 +255,10 @@ public class Dato {
                                         String ronda = tokens2[3];
                                         String oponente = tokens2[4];
                                         String resultado = tokens2[5];
-                                        Encuentro e = new Encuentro(anio, superficie, ronda, oponente, resultado);
-                                        encuentros.get(jugador1).add(e);
+                                        if(superficie.equals(auxSupercifie) || auxSupercifie.equals("All")){
+                                           Encuentro e = new Encuentro(anio, superficie, ronda, oponente, resultado);
+                                           encuentros.get(jugador1).add(e);
+                                        }
                                     
                                 }
                             }
@@ -295,7 +298,7 @@ public class Dato {
     
     
     
-    private static void crearFormatoSalida() {
+    private static void crearFormatoSalida(String auxSuperficie) {
 //archivo que se necesita parsear
         String fileToParse = "src/datos/encuentros2012.csv";
         BufferedReader fileReader = null;
@@ -323,10 +326,14 @@ public class Dato {
                                 String jugador2 = tokens2[4];
                                 if(jugadores.contains(jugador2)){
                                     String resultado = tokens2[5];
+                                    String superficie = tokens2[2];
                                     if(encuentros.get(jugador1) != null && encuentros.get(jugador2) != null){
-                                        System.out.println(formatoJugador(jugador1) + ";" +
+                                        if(superficie.equals(auxSuperficie) || auxSuperficie.equals("All")){
+                                            System.out.println(formatoJugador(jugador1) + ";" +
                                                            formatoJugador(jugador2) + ";"+ 
-                                                           resultado);    
+                                                           resultado);                                             
+                                        }
+   
                                     }
 
                                 }

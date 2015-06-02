@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * La clase implementa una serie de metodos necesarios para ejecutar el clasificador Naive Bayes
@@ -30,6 +31,8 @@ public class ClasificadorNaiveBayes {
     public static ArrayList<Double> mediaDerrotas; // ArrayList que contiene las medias de cada uno de los atributos de partidos perdidos
     public static ArrayList<Double> varianzaDerrotas; //ArrayList que contiene las varianzas de cada uno de los atributos de partidos perdidos   
     
+    public static ArrayList<Game> test; // lista partidos de prueba
+    
     public ClasificadorNaiveBayes(String csvPartidos) {
         cantidadAtributos = 0;
         cantidadPartidos = 0;
@@ -46,16 +49,43 @@ public class ClasificadorNaiveBayes {
         mediaDerrotas = new ArrayList<>();
         varianzaDerrotas = new ArrayList<>();
         
+        test = new ArrayList<>();        
+        
         cargarPartidos(csvPartidos);
         calcularMediasVarianzas();
+        System.out.println(validacionCruzada(10));
+       
+    }
+    
+    /**
+     * Metodo que evalua los resultados del analisis estadistico
+     * @param iteraciones cantidad de repeticiones para el calculo del valor que se quiere obtener
+     * @return el promedio de los elementos bien clasificados
+     */    
+    public double validacionCruzada(int iteraciones){
         
-        ArrayList<Double> aux1 = new ArrayList<>();
-        for(int i=0; i<18; i++){
-            aux1.add(1.0);
+        int middle;
+        middle = (juegos.size() % 2 == 0)? juegos.size() / 2 : (juegos.size() - 1) / 2;
+        //agregar los valores al array test    
+        double promedio = 0;
+        for(int j=0; j<iteraciones; j++){
+            Collections.shuffle(juegos);
+            for(int i = middle; i<juegos.size(); i++){
+                test.add(juegos.get(i));
+            }                
+            double result;
+            int count = 0;            
+            for(int i = 0; i<test.size(); i++){
+                String resultado = clasificarPartido(test.get(i));
+                if(resultado.equals(test.get(i).getResultado())){
+                    count++;
+                }            
+            }
+            result = (double) count/test.size() * 100;
+            promedio += result;
+            test.clear();
         }
-
-        Game aux = new Game(aux1, "W");
-        clasificarPartido(aux);        
+        return (double) promedio/iteraciones;
     }
     
    /**
@@ -235,13 +265,13 @@ public class ClasificadorNaiveBayes {
         
         if(resultadoW > resultadoD){
             //System.out.println("GANO V --> " + resultadoW/evidencia + " || " + resultadoD);
-            System.out.println("V");
-            return "V";
+            //System.out.println("V");
+            return "W";
         }
         else{
             //System.out.println("PERDIO D --> " + resultadoW/evidencia + " || " + resultadoD);
-            System.out.println("D");
-            return "D";
+            //System.out.println("D");
+            return "L";
         }
         }
         
