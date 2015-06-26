@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package proyectotenis.parseadorAtp;
+package proyectotenis.parseadorATP;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -20,19 +21,17 @@ import java.util.HashMap;
 
 /**
  * 
- * La clase permite ejecutar algunos metodos encargados de extraer datos desde un sitio web
+ * La clase permite ejecutar algunos metodos encargados de extraer datos desde un sitio web oficial de la
+ * Asociaciones de Tenistas Profesionales (ATP)
  */
-public class ParseadorAtp {
+public class ParseadorATP {
 
-static ArrayList<Jugador> jugadores = new ArrayList<>();
     
 public static void main(String[] args) throws IOException {
-        //obtenerPartidos("Tennis/Players/Top-Players/Rafael-Nadal.aspx?t=pa&");
-        //obtenerDatos200(2012);
-        //obtenerJugadores(2012);
-        estadisticaDesempenoJugadores(2013, 3);
-        //estadisticaH2H("D643", "N409"); //djokovic vs nadal
-        //estadisticaH2H("F324", "T786"); //federer vs tsonga
+        //obtenerResultadosEncuentros(2012, 100);    
+        //obtenerJugadores(2012, 100);
+        //obtenerDesempenoJugadoresTop200(2012, 0);
+        //obtenerHistorialEncuentros("D643", "N409"); //(djokovic vs nadal) F324 federer, T786 tsonga
     }
 
 /**
@@ -57,14 +56,15 @@ private static String obtenerContenidoHtml() throws IOException {
 
 /**
  * El metodo se encarga de obtener todos los partidos a los que se ha enfrentado un determinado jugador
- * @param enlace se refiere a la URL que permite visualizar todos los partidos a los que se ha enfrentado un jugador
+ * @param enlace se refiere a la URL que permite obtener todos los partidos a los que se ha enfrentado un jugador
+ * @param ano se refiere al año de los partidos que se obtendran
  * @throws MalformedURLException
  * @throws IOException 
  */
 private static void obtenerPartidos(String enlace, int ano) throws MalformedURLException, IOException{
         
         String anoEvaluado = ano+"";
-        URL url = new URL("http://www.atpworldtour.com/" + enlace + "y="+anoEvaluado+"&m=s&e=0#");
+        URL url = new URL("http://es.atpworldtour.com/" + enlace + "y="+anoEvaluado+"&m=s&e=0#");
         URLConnection uc = url.openConnection();
         uc.connect();    
         BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
@@ -79,7 +79,16 @@ private static void obtenerPartidos(String enlace, int ano) throws MalformedURLE
                 contenido += inputLine.substring(inputLine.indexOf("<strong>")+8, inputLine.indexOf("</strong>")) + ";";
                 contenido += anoEvaluado + ";";
                 String[] aux = inputLine.split(";");
-                contenido += aux[aux.length-4] + ";";            
+                String auxSuperficie = aux[aux.length-4];
+                if(auxSuperficie.equals("Arcilla")){
+                    contenido += "Clay" + ";";            
+                }
+                else if(auxSuperficie.equals("Pasto")){
+                    contenido += "Grass" + ";";            
+                }
+                else{ // cemento
+                    contenido += "Hard" + ";";            
+                }           
             }
             if(inputLine.contains("<td>")){
                 if(i>5){
@@ -104,34 +113,36 @@ private static void obtenerPartidos(String enlace, int ano) throws MalformedURLE
                 i++;
             }  
         }
-        in.close();    
-        //return p;
-    
+        in.close();        
 }
 
 
 /**
- * El metodo permite obtener información de los primeros 1000 jugadores del circuito atp para una determinada temporada
+ * El metodo permite obtener información de jugadores del circuito atp para una determinada temporada
+ * @param ano se refiere al año de la informacion de los jugadores que se quiere obtener
+ * @param topJugadores se refiere a la cantidad de jugadores que se quiere obtener
+ * @return
  * @throws IOException 
  */
-private static HashMap<String, Integer> obtenerJugadores(int ano) throws IOException {
-    ArrayList<String> rank = new ArrayList<>();
-    rank.add("1"); //primeros 100
-    rank.add("101"); //101-200
-    rank.add("201"); //201-300
-    rank.add("301"); //301-400
-    rank.add("401"); //401-500
-    rank.add("501"); //501-600
-    rank.add("601"); //601-700
-    rank.add("701"); //701-800
-    rank.add("801"); //801-900    
-    rank.add("901"); //901-1000
-    String fecha2012 = "31.12.2012";
+private static HashMap<String, Integer> obtenerJugadores(int ano, int topJugadores) throws IOException {
+    //1-top 100 / 101- top 200 / 201- top 300 / 301- top 400 / 401- top 500
+    ArrayList<String> rank = new ArrayList( Arrays.asList("1", "101", "201", "301", "401", "501"));
+    String fecha = "";
+    if(ano == 2012){
+        fecha = "31.12.2012";
+    }
+    else if(ano == 2013){
+        fecha = "30.12.2013";
+    }
+    else if(ano == 2014){
+        fecha = "29.12.2014";
+    }
+    int cantidadJugadores = (topJugadores/100);
     int contador = 0;
     HashMap<String, Integer> jugadores = new HashMap<>();
-    for(int i=0; i<rank.size(); i++){
+    for(int i=0; i<cantidadJugadores; i++){
         URL url;
-        url = new URL("http://www.atpworldtour.com/Rankings/Singles.aspx?d="+fecha2012+"&r="+rank.get(i)+"&c=#");
+        url = new URL("http://es.atpworldtour.com/Rankings/Singles.aspx?d="+fecha+"&r="+rank.get(i)+"&c=#");
         URLConnection uc = url.openConnection();
         uc.connect();
         BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
@@ -155,10 +166,6 @@ private static HashMap<String, Integer> obtenerJugadores(int ano) throws IOExcep
             if(num == 3){ //agregar jugador
                 String[] jug = contenido.split(";");
                 String nombre = jug[0];
-                //String pais = jug[1];
-                //int puntos = Integer.parseInt(jug[2]);
-                //String enlace = jug[3];
-                //Jugador j = new Jugador(nombre, pais, puntos, enlace); //creo el jugador
                 System.out.println(nombre);
                 jugadores.put(nombre , contador );
                 contador++;
@@ -175,22 +182,28 @@ private static HashMap<String, Integer> obtenerJugadores(int ano) throws IOExcep
 
 /**
  * El metodo permite obtener información de los primeros 200 jugadores del circuito atp para una determinada temporada
+  * @param ano se refiere al año de la informacion de los jugadores que se quiere obtener
+ * @param topJugadores se refiere a la cantidad de jugadores que se quiere obtener* 
  * @throws IOException 
  */
-private static void obtenerDatos200(int ano) throws IOException {
-    ArrayList<String> rank = new ArrayList<>();
-    rank.add("1"); //primeros 100
-    rank.add("101"); //101-200
-    String fecha2012 = "31.12.2012";
-    String fecha2013 = "30.12.2013";
-    for(int i=0; i<rank.size(); i++){
+private static void obtenerResultadosEncuentros(int ano, int topJugadores) throws IOException {
+    //1-top 100 / 101- top 200 / 201- top 300 / 301- top 400 / 401- top 500
+    ArrayList<String> rank = new ArrayList( Arrays.asList("1", "101", "201", "301", "401", "501"));
+    String fecha = "";
+    if(ano == 2012){
+        fecha = "31.12.2012";
+    }
+    else if(ano == 2013){
+        fecha = "30.12.2013";
+    }
+    else if(ano == 2014){
+        fecha = "29.12.2014";
+    }
+    int cantidadJugadores = (topJugadores/100);
+    for(int i=0; i<topJugadores; i++){
         URL url;
-        if(ano == 2012){
-            url = new URL("http://www.atpworldtour.com/Rankings/Singles.aspx?d="+fecha2012+"&r="+rank.get(i)+"&c=#");
-        }
-        else{
-            url = new URL("http://www.atpworldtour.com/Rankings/Singles.aspx?d="+fecha2013+"&r="+rank.get(i)+"&c=#");
-        }
+        url = new URL("http://es.atpworldtour.com/Rankings/Singles.aspx?d="+fecha+"&r="+rank.get(i)+"&c=#");
+
         URLConnection uc = url.openConnection();
         uc.connect();
         BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
@@ -216,11 +229,10 @@ private static void obtenerDatos200(int ano) throws IOException {
                 String[] jug = contenido.split(";");
                 String nombre = jug[0];
                 String pais = jug[1];
-                int puntos = Integer.parseInt(jug[2]);
+                int puntos = Integer.parseInt(jug[2].replace(".", ""));
                 String enlace = jug[3];
-                Jugador j = new Jugador(nombre, pais, puntos, enlace); //creo el jugador
-                jugadores.add(j); // agrego al jugador
                 obtenerPartidos(enlace, ano);
+                System.out.println("");
                 contenido = "";
                 num = 0;
             }
@@ -234,7 +246,7 @@ private static void obtenerDatos200(int ano) throws IOException {
 /**
  * El metodo permite transformar un valor porcentual del tipo 98% a 0.98
  * @param valor se refiere al valor porcentual sin transformar
- * @return 
+ * @return el valor porcentual normalizado
  */
 private static String TransformarValorPorcentual(String valor){
     String aux = valor.substring(0, valor.length()-1);
@@ -306,8 +318,8 @@ private static String limpiarValores(String jugador){
  * @throws MalformedURLException
  * @throws IOException 
  */
-private static void estadisticaH2H(String idJug1, String idJug2) throws MalformedURLException, IOException{
-    URL url = new URL("http://www.atpworldtour.com/Players/Head-To-Head.aspx?pId=" + idJug1 + "&oId=" + idJug2);
+private static void obtenerHistorialEncuentros(String idJug1, String idJug2) throws MalformedURLException, IOException{
+    URL url = new URL("http://es.atpworldtour.com/Players/Head-To-Head.aspx?pId=" + idJug1 + "&oId=" + idJug2);
     URLConnection uc = url.openConnection();
     uc.connect();
     BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
@@ -371,7 +383,7 @@ private static void estadisticaH2H(String idJug1, String idJug2) throws Malforme
  * @throws MalformedURLException
  * @throws IOException 
  */
-private static void estadisticaDesempenoJugadores(int ano, int superficie) throws MalformedURLException, IOException{
+private static void obtenerDesempenoJugadoresTop200(int ano, int superficie) throws MalformedURLException, IOException{
     URL url = new URL("http://es.atpworldtour.com/Rankings/Top-Matchfacts.aspx?y=" + ano + "&s=" + superficie + "#");
     URLConnection uc = url.openConnection();
     uc.connect();
