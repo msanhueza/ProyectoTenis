@@ -50,4 +50,4 @@ plot3d(comp$PC1, comp$PC2, comp$PC3, col=c("blue","red")[unclass(data$clase)])
 #pegar la clase
 comp$class=data$clase
 
-write.csv(file="superficies2012-5PC.csv", x=comp)
+write.csv(file="superficies2012-3PC.csv", x=comp)
