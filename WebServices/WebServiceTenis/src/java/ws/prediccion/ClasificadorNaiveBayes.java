@@ -8,6 +8,8 @@ package ws.prediccion;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -23,7 +25,7 @@ public class ClasificadorNaiveBayes {
     public static double probVictoria, probDerrota; // probabiliad de ser Victoria o Derrota
     public static ArrayList<ArrayList<Double>> victorias; // arrayList con los atributos de victorias
     public static ArrayList<ArrayList<Double>> derrotas; // arrayList con los atributos de derrotas
-    public static ArrayList<Game> juegos; // arrayList que contiene todos los enfrentamientos (atributos y clase)
+    public static ArrayList<EncuentroTenis> juegos; // arrayList que contiene todos los enfrentamientos (atributos y clase)
     
     public static ArrayList<Double> mediaVictorias; // ArrayList que contiene las medias de cada uno de los atributos de partidos ganados
     public static ArrayList<Double> varianzaVictorias; //ArrayList que contiene las varianzas de cada uno de los atributos de partidos ganados
@@ -31,7 +33,7 @@ public class ClasificadorNaiveBayes {
     public static ArrayList<Double> mediaDerrotas; // ArrayList que contiene las medias de cada uno de los atributos de partidos perdidos
     public static ArrayList<Double> varianzaDerrotas; //ArrayList que contiene las varianzas de cada uno de los atributos de partidos perdidos   
     
-    public static ArrayList<Game> test; // lista partidos de prueba
+    public static ArrayList<EncuentroTenis> test; // lista partidos de prueba
     
     public ClasificadorNaiveBayes(String csvPartidos) {
         cantidadAtributos = 0;
@@ -102,12 +104,13 @@ public class ClasificadorNaiveBayes {
         {
             String line = "";
             //crea el archivo lector
-            fileReader = new BufferedReader(new FileReader(fileToParse));
+            URL stockURL = new URL(fileToParse);
+            fileReader = new BufferedReader(new InputStreamReader(stockURL.openStream()));
             
             line = fileReader.readLine();
             int total = (line.split(DELIMITER).length)-1;
             cantidadAtributos = total;
-            System.out.println("CANTIDAD --->" + total);
+            //System.out.println("CANTIDAD --->" + total);
             
             //inicializamos los arrayList que guardaran los valores de cada atributo para victorias y derrotas
             for(int i=0; i<total; i++){
@@ -129,7 +132,7 @@ public class ClasificadorNaiveBayes {
                     atributos.add(atrib);
                 }
                 
-                Game g = new Game(atributos, resultado);
+                EncuentroTenis g = new EncuentroTenis(atributos, resultado);
                 juegos.add(g);
                 
                 //se agrega cada uno de los atributos al arrayList que corresponde de victorias o derrotas
@@ -243,7 +246,7 @@ public class ClasificadorNaiveBayes {
      * para cada resultado (victoria y derrota) 
      * @param game partido que se desea clasificar
      */
-    public String clasificarPartido(Game game) {
+    public String clasificarPartido(EncuentroTenis game) {
         double resultadoW = 1.0;
         double resultadoD = 1.0;
         double evidencia;
@@ -254,9 +257,9 @@ public class ClasificadorNaiveBayes {
         int totalVictorias = victorias.size();
         int totalDerrotas = derrotas.size();
         for(int i=0; i<game.atributos.size();i++){
-            System.out.println("---> " + game.atributos.get(i));
+            //System.out.println("---> " + game.atributos.get(i));
         }
-        System.out.println("---> " + game.resultado);
+        //System.out.println("---> " + game.resultado);
         
         for(int i=0; i<totalVictorias ; i++){
             Double mediaVictory = mediaVictorias.get(i);

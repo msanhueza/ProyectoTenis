@@ -24,49 +24,49 @@ public class PredecirPartido {
      * @return 
      */
     @WebMethod(operationName = "predecir")
-    public ArrayList<String> predecir(@WebParam(name = "jugador1") String jugador1, @WebParam(name = "jugador2") String jugador2, @WebParam(name = "tipoSuperficie") int tipoSuperficie) throws InterruptedException {
+    public String predecir(@WebParam(name = "jugador1") String jugador1, @WebParam(name = "jugador2") String jugador2, @WebParam(name = "tipoSuperficie") int tipoSuperficie) throws InterruptedException {
         ArrayList<String> resultados = new ArrayList<>();
         int superficie = tipoSuperficie; // 1 Arcilla, 2 Cemento, 3 Pasto
         String csvDesempeno = "";
         String csvPartidos = "";
         String csvEncuentros = "";
-        Game g;
+        EncuentroTenis g;
         if(tipoSuperficie == 1){
-            csvDesempeno = "C:\\Users\\msanhuezal\\Documents\\NetBeansProjects\\WebServiceTenis\\src\\java\\ws\\prediccion\\datos\\desempenoClay2012.csv";
-            csvPartidos = "C:\\Users\\msanhuezal\\Documents\\NetBeansProjects\\WebServiceTenis\\src\\java\\ws\\prediccion\\datos\\partidosClay2012.csv";
-            csvEncuentros = "C:\\Users\\msanhuezal\\Documents\\NetBeansProjects\\WebServiceTenis\\src\\java\\ws\\prediccion\\datos\\encuentros2012.csv";
-            Dato d = new Dato("Clay", csvDesempeno, csvEncuentros);
+            csvDesempeno = "https://raw.githubusercontent.com/msanhueza/ProyectoTenis/master/Datos/ServicioWeb/desempenoClay2012.csv";
+            csvPartidos = "https://raw.githubusercontent.com/msanhueza/ProyectoTenis/master/Datos/ServicioWeb/partidosClay2012.csv";
+            csvEncuentros = "https://raw.githubusercontent.com/msanhueza/ProyectoTenis/master/Datos/ServicioWeb/encuentros2012.csv";
+            GeneradorEncuentros d = new GeneradorEncuentros("Clay", csvDesempeno, csvEncuentros);
             g = d.crearFormatoSalida(jugador1, jugador2);
         }
         else if(tipoSuperficie == 2){
-            csvDesempeno = "C:\\Users\\msanhuezal\\Documents\\NetBeansProjects\\WebServiceTenis\\src\\java\\ws\\prediccion\\datos\\desempenoHard2012.csv";
-            csvPartidos = "C:\\Users\\msanhuezal\\Documents\\NetBeansProjects\\WebServiceTenis\\src\\java\\ws\\prediccion\\datos\\partidosHard2012.csv";       
-            csvEncuentros = "C:\\Users\\msanhuezal\\Documents\\NetBeansProjects\\WebServiceTenis\\src\\java\\ws\\prediccion\\datos\\encuentros2012.csv";
-            Dato d = new Dato("Hard", csvDesempeno, csvEncuentros);
+            csvDesempeno = "https://raw.githubusercontent.com/msanhueza/ProyectoTenis/master/Datos/ServicioWeb/desempenoHard2012.csv";
+            csvPartidos = "https://raw.githubusercontent.com/msanhueza/ProyectoTenis/master/Datos/ServicioWeb/partidosHard2012.csv";       
+            csvEncuentros = "https://raw.githubusercontent.com/msanhueza/ProyectoTenis/master/Datos/ServicioWeb/encuentros2012.csv";
+            GeneradorEncuentros d = new GeneradorEncuentros("Hard", csvDesempeno, csvEncuentros);
             g = d.crearFormatoSalida(jugador1, jugador2);            
         }
         else{
-            csvDesempeno = "C:\\Users\\msanhuezal\\Documents\\NetBeansProjects\\WebServiceTenis\\src\\java\\ws\\prediccion\\datos\\desempenoGrass2012.csv";
-            csvPartidos = "C:\\Users\\msanhuezal\\Documents\\NetBeansProjects\\WebServiceTenis\\src\\java\\ws\\prediccion\\datos\\partidosGrass2012.csv";        
-            csvEncuentros = "C:\\Users\\msanhuezal\\Documents\\NetBeansProjects\\WebServiceTenis\\src\\java\\ws\\prediccion\\datos\\encuentros2012.csv";            
-            Dato d = new Dato("Grass", csvDesempeno, csvEncuentros);
+            csvDesempeno = "https://raw.githubusercontent.com/msanhueza/ProyectoTenis/master/Datos/ServicioWeb/desempenoGrass2012.csv";
+            csvPartidos = "https://raw.githubusercontent.com/msanhueza/ProyectoTenis/master/Datos/ServicioWeb/partidosGrass2012.csv";        
+            csvEncuentros = "https://raw.githubusercontent.com/msanhueza/ProyectoTenis/master/Datos/ServicioWeb/encuentros2012.csv";            
+            GeneradorEncuentros d = new GeneradorEncuentros("Grass", csvDesempeno, csvEncuentros);
             g = d.crearFormatoSalida(jugador1, jugador2);            
         }
          
         ClasificadorNaiveBayes cnb = new ClasificadorNaiveBayes(csvPartidos);
+        String resultado = "";
         if(g == null){
-            return null;
+            return "SIN INFORMACION";
         }
         String r = cnb.clasificarPartido(g);
 
         if(r.equals("W")){
-            resultados.add("");
+            resultado = "W";
         }
         else{
-            resultados.add("");
-            resultados.add("");
+            resultado = "L";
         }
-        return resultados;
+        return resultado;
     }
 
 }
