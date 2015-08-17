@@ -1,0 +1,275 @@
+// Place all the styles related to the homepage controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+ul{
+  list-style-type: square;
+  list-style-position: inside;
+  padding-left:0;
+}
+
+#grad1 {
+    background: -webkit-radial-gradient(#053591, #010439); /* Safari 5.1 to 6.0 */
+    background: -o-radial-gradient(#053591,#010439 ); /* For Opera 11.6 to 12.0 */
+    background: -moz-radial-gradient(#053591,#010439 ); /* For Firefox 3.6 to 15 */
+    background: radial-gradient(#053591, #010439); /* Standard syntax (must be last) */
+}
+
+.panel-orange{
+    background-color:#f7832c;
+    font-family: 'Michroma', serif;
+}
+
+.panel-darkorange{
+	background-color:#ba5016;
+  color:white;
+}
+
+.panel-orange p{
+    color:white;
+    background-color:#f7832c;
+    font-family: 'Michroma', serif;
+}
+
+
+ul.panel-orange li.selected{
+    margin-top:-20px;
+    color:white;
+    background:#f7832c;
+}
+
+
+.panel-green {
+    background-color:#1ec533;
+    color:white;
+    font-family: 'Michroma', serif;
+}
+
+.panel-green p{
+    background-color:#1ec533;
+    color:white;
+    font-family: 'Michroma', serif;
+}
+
+.panel-darkgreen{
+    background-color:#128c15;
+    color:white;
+}
+
+
+.panel-yellow{
+    background-color:#fed03f;
+    color:black;
+    font-family: 'Michroma', serif;
+}
+
+.panel-yellow p{
+    background-color:#fed03f;
+    color:black;
+    font-family: 'Michroma', serif;
+}
+
+.panel-darkyellow{
+    background-color:#c29921;
+    color:black;
+}
+
+
+/*
+.green p,li{
+    color:white;
+}
+*/
+
+
+.panel-default > .panel-body {
+  background-color: #f7832c;
+  color:white;
+  border: 0;
+}
+
+.panel-default > .panel-heading {
+  background-color: #ba5016;
+  color:white;
+  border: 0;
+}
+
+.panel-default{
+  border: 0;
+}
+
+.navbar-inverse {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+footer {
+  background-color: transparent;
+  background: transparent;
+}
+
+html {
+   font-family: 'Michroma', serif;
+}
+
+body {
+   font-family: 'Michroma', serif;
+}
+
+*{
+   font-family: 'Michroma', serif;
+}
+
+.timeline div.item {
+    vertical-align: top;
+    display: inline-block;
+    text-align: center;
+    width: 150px;
+}
+
+
+.timeline .caption {
+    color:white;
+    display: block;
+    line-height: 120%;
+    font-size: 8px;
+    width:170px;
+}
+
+
+.timeline img{
+    width: 80px;
+    height: 80px;
+    background-color: grey;
+    padding: 0px ;
+    margin-right: 0px;
+    margin-left: 20px;
+    padding-left:0px;
+}
+
+aside.figures {
+    overflow: hidden; /* only needed if floating the child elements */
+}
+
+aside.figures figure {
+    display: inline-block;
+    border: 0px solid;
+    margin: 15px;
+}
+
+aside.figures figcaption {
+    /*border: 1px dotted blue;*/
+    text-align: center;
+    font-size: 7px;
+}
+
+aside.enlaces {
+    overflow: hidden; /* only needed if floating the child elements */
+}
+
+aside.enlaces figure {
+    display: inline-block;
+    border: 0px solid;
+    margin: 0px;
+    width:80px;
+}
+
+aside.enlaces figcaption {
+    /*border: 1px dotted blue;*/
+    text-align: center;
+    font-size: 7px;
+}
+
+
+/** ---------- DBLP   -------**/
+
+/** PUBL LISTS **/
+
+/* list */
+ul.publ-list { margin:1ex 0em 4ex; padding:0px; }
+ul.publ-list>li { display:table; margin:0ex 0em 1ex; padding:0px;}
+ul.publ-list>li.year { font-size:small; font-weight:800; }
+ul.publ-list>li.heading { font-size:small; }
+ul.publ-list>li.no-pub { padding-left:24px; }
+ul.publ-list>li>div { display:table-cell; padding:0px 2px; }
+
+ul.publ-list>li.entry>div.box>img { width:12px; height:12px; }
+ul.publ-list>li.book>div.box>img { background:#f8c91f; }
+ul.publ-list>li.incollection>div.box>img { background:#ef942d; }
+ul.publ-list>li.article>div.box>img { background:#c32b72; }
+ul.publ-list>li.inproceedings>div.box>img { background:#196ca3; }
+ul.publ-list>li.editor>div.box>img { background:#33c3ba; }
+ul.publ-list>li.reference>div.box>img { background:#96ad2c; }
+ul.publ-list>li.informal>div.box>img { background:#606b70; }
+
+ul.publ-list>li.entry>div.nr { min-width:2.5em; text-align:center; white-space:nowrap;
+                             padding-left:4px; }
+ul.publ-list>li.entry>nav { display:table-cell; }
+ul.publ-list .person { }
+ul.publ-list .title { color:#666666; font-weight:700; }
+
+/* nav menu */
+nav.publ { display:inline; padding:0ex 0.5em; }
+nav.publ>ul { display:inline; list-style:none; white-space:nowrap; padding:0px; }
+nav.publ>ul>li { display:inline-block; vertical-align:-3px; }
+
+nav.publ .drop-down>.body { white-space:nowrap; width:auto; }
+nav.publ .drop-down>.body ul { padding:0px; margin:0px 0px 0.5ex 0px; }
+nav.publ .drop-down>.body ul>li { display:block; padding:0px; margin:0px 4px 0px 0px; }
+nav.publ .drop-down>.body>ul>li>a>img { vertical-align:-2px; padding-right:0.3em; }
+nav.publ .drop-down>.body ul.bullets>li { display:list-item; padding:0px;
+                                          margin:0px 4px 0px 15px; }
+
+
+/* dropdown */
+
+.drop-down { display:inline-block; position:relative;
+             color:#505b62; font-size:medium; font-weight:normal;
+             padding:0px; margin:0px; }
+.drop-down a {  color:#505b62; text-decoration:none; }
+.drop-down a:hover { color:#1889c4; text-decoration:underline;  }
+.drop-down>.head { display:inline-block; position:relative; font-size:smaller; background:#fed03f;
+                   border:2px #fed03f solid; width:20px; height:20px; }
+.drop-down:hover>.head { border-color:#cccccc;  border-bottom-color:#fed03f; z-index:33;}
+.drop-down>.head img { padding:2px; }
+.drop-down>.body { display:none; position:absolute; top:22px; left:-20px;
+          white-space:normal; font-size:smaller; background:#fed03f; width:200px;
+          border:2px #cccccc solid; padding:4px; margin:0px; }
+.drop-down>.body p { padding:0px; margin:0px 0px 0.5ex 0px; }
+.drop-down>.body ul { padding:0px; margin:0px 0px 0.5ex 0px; }
+.drop-down>.body.nowrap { white-space:nowrap; width:auto; }
+.drop-down:hover>.body { display:block; z-index:22; }
+
+.drop-down{
+font-size:8pt;
+}
+.data{
+font-size:8pt;
+}
+
+.zoom{
+width:80px;
+height:auto;
+}
+
+.zoom:hover{
+width:100px;
+height:auto;
+}
+
+/*TILT*/
+.tilt {
+  -webkit-transition: all 0.5s ease;
+     -moz-transition: all 0.5s ease;
+       -o-transition: all 0.5s ease;
+      -ms-transition: all 0.5s ease;
+          transition: all 0.5s ease;
+}
+
+.tilt:hover {
+  -webkit-transform: rotate(-20deg);
+     -moz-transform: rotate(-20deg);
+       -o-transform: rotate(-20deg);
+      -ms-transform: rotate(-20deg);
+          transform: rotate(-20deg);
+}
