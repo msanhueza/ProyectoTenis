@@ -44,7 +44,7 @@
     <script type="text/javascript" src="js/jugadores.js"></script>
       
     </head>
-    <body>
+    <body id="grad1">
 
     <!-- header -->
     <div id="top-nav" class="navbar navbar-inverse navbar-static-top">
@@ -59,6 +59,13 @@
 
     <div class="container-fluid">
 	<div class="row">
+            
+                <div class="col-sm-12">
+                    <div class="panel panel-darkgreen">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">La Aplicación</h3>
+                        </div>
+                        <div class="panel-body" style="background-image: url('images/fondo.jpg');">
 		<div class="col-sm-12">
 
                     <div  class="container-fluid">
@@ -67,31 +74,38 @@
                                     <div class="col-sm-4">			
                                         <div class="panel panel-darkgreen">
                                                     <div class="panel-heading">
-                                                            <h4>La Aplicación</h4>
+                                                            <h4>Cómo funciona?</h4>
                                                     </div>
                                                     <div class="panel-body panel-green">
                                                         <p>
-                                                            Esta aplicación utiliza el clasificador Naive Bayes para realizar la predicción de victorias entre 
-                                                            jugadores de la Asociación de Tenistas Profesionales (ATP).<br/><br/>
+                                                            Para realizar la predicción de un partido de tenis, el programa utiliza el clasificador probabilístico Naive Bayes. 
+                                                            Este trabaja con datos de desempeño referente a cada uno de los jugadores de la Asociación de Tenistas 
+                                                            Profesionales (ATP) en las diferentes superficies de juego (arcilla, cemento y pasto) durante la temporada 2012.<br/><br/>
 
-                                                            Cabe destacar que la predicción se realiza en base al historial de resultados y desempeño de cada 
-                                                            jugador durante la temporada 2012.<br/><br/>
+                                                            Además el clasificador utiliza información sobre los enfrentamientos que tuvieron los jugadores con sus pares 
+                                                            durante la temporada 2012.<br/><br/>
 
-                                                            Para utilizar el sistema, basta con rellenar los campos de texto con los nombres de los jugadores 
-                                                            que se desean evaluar, indicar la superficie donde jugarán y presionar el botón "Predecir" para obtener 
-                                                            el resultado final del encuentro.
+                                                            El modelo predictivo realiza el cálculo de medias y varianzas para cada uno de los atributos que hacen referencia a 
+                                                            los enfrentamientos de los jugadores, lo cual sirve para entrenar el modelo predictivo y posteriormente en fase de 
+                                                            prueba realizar el cálculo de las probabilidades <i>a posteriori</i> que permiten clasificar un determinado encuentro en 
+                                                            VICTORIA o DERROTA.<br/><br/>
+                                                            
+                                                            Para utilizar la aplicación, se deben rellenar los campos de texto con los nombres de los jugadores a quiénes se desea  
+                                                            predecir su enfrentamiento, indicar la superficie donde jugarán y presionar el botón "Predecir" para obtener 
+                                                            el resultado final del enfrentamiento.
                                                         </p>
                                                     </div>
                                         </div>
+                                                                             
                                     </div>
 
 
                                     <div class="col-sm-8">
-                                            <div class="panel panel-darkorange">
+                                            <div class="panel panel-darkgreen">
                                                 <div class="panel-heading">
                                                     <h4> Quién Ganará? </h4>
                                                 </div>
-                                                <div class="panel-body panel-orange">
+                                                <div class="panel-body panel-green">
                                                     <div class="col-sm-12">
 
                                                         <div id="error"></div>
@@ -99,11 +113,11 @@
 
                                                         <form action="index.jsp" method="POST">
                                                             <div class="col-sm-6">
-                                                                <div class="panel panel-darkorange">
+                                                                <div class="panel panel-darkgreen">
                                                                     <div class="panel-heading">
                                                                          <h3 class="panel-title"><center>JUGADOR 1</center></h3>
                                                                     </div>
-                                                                    <div class="panel-body panel-orange">
+                                                                    <div class="panel-body panel-green">
                                                                         <div class="input-group input-group-lg">
                                                                             <input id="tags1" type="text" name="player1" class="form-control" placeholder="Nombre Jugador 1" aria-describedby="sizing-addon2">
                                                                         </div>
@@ -112,11 +126,11 @@
                                                             </div> 
 
                                                             <div class="col-sm-6">
-                                                                <div class="panel panel-darkorange">
+                                                                <div class="panel panel-darkgreen">
                                                                     <div class="panel-heading">
                                                                         <h3 class="panel-title"><center>JUGADOR 2</center></h3>
                                                                     </div>
-                                                                    <div class="panel-body panel-orange">
+                                                                    <div class="panel-body panel-green">
                                                                         <div class="input-group input-group-lg">
                                                                             <input id="tags2" type="text" name="player2" class="form-control" placeholder="Nombre Jugador 2" aria-describedby="sizing-addon2">
                                                                         </div>
@@ -176,11 +190,11 @@
                     }
                     
                     String resultado = "<div class=\"col-sm-12\">"+
-                                        "<div class=\"panel panel-darkorange\">"+
+                                        "<div class=\"panel panel-darkgreen\">"+
                                             "<div class=\"panel-heading\">"+
                                                  "<h3 class=\"panel-title\"><center>Superficie:  "+superficieJuego+"</center></h3>"+
                                             "</div>"+
-                                            "<div class=\"panel-body panel-orange\">"+
+                                            "<div class=\"panel-body panel-green\">"+
                                                         "<div class=\"col-sm-6\">" +
                                                             "<center><h3>"+nombreJugador1+"</h3></center><br/>"+
                                                             "<center><h5>("+resultadoJugador1+")</h5></center><br/>"+
@@ -233,6 +247,11 @@
                             </div>
                     </div>
                 </div>
+                        </div>
+                    </div>
+                </div>             
+            
+
         </div>
     </div>
 
