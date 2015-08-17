@@ -19,8 +19,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <!-- Para que funcione el responsive en celulares -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Predictor Tenis</title>
-
+    <title>Predictor Tenis ATP</title>
+    <link rel="shortcut icon" type="image/png" href="images/raqueta.png"/>
     
     <!-- CSS y JS para JQuery -->
     <link href='http://fonts.googleapis.com/css?family=Michroma' rel='stylesheet' type='text/css'>
